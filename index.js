@@ -86,6 +86,21 @@ async function run() {
       res.send(result);
     });
 
+    // user request for seller
+    app.put("/requestRider/:email", async (req, res) => {
+      const email = req.params.email;
+      console.log(email);
+      const filter = { userEmail: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          requestFor: "rider",
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
     // update client to seller
     app.put("/updateSeller/:email", async (req, res) => {
       const email = req.params.email;
@@ -166,6 +181,40 @@ async function run() {
       const options = { upsert: true };
       const updateDoc = {
         $set: updateBody,
+      };
+      const result = await foodItemCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+    // food approve or deny from admin
+    app.put("/updateFoodRequestApprove/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          request: "approve",
+        },
+      };
+      const result = await foodItemCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
+    app.put("/updateFoodRequestDeny/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          request: "deny",
+        },
       };
       const result = await foodItemCollection.updateOne(
         filter,
